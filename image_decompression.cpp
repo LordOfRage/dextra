@@ -1,10 +1,15 @@
+// This Pokémon sprite decompression algorithm would not be possible without Retro Game Mechanics Explained.
+// His YouTube video on this topic is linked here: https://www.youtube.com/watch?v=aF1Yw_wu2cM&t=1352s
+// He also has a website where you can see the decompression process happen in your browser: https://rgmechex.com/tech/gen1decompress.html
+// As it is not obfuscated in any way, you can also view his JS code, which the code in this file was "heavily inspired by" ;)
+
 #include "bitstream.h"
 #include <cstddef>
 #include <cstdint>
 using namespace std;
 using namespace bitstream;
 
-void decompBitplane(file_bitstream_reader &rom, uint8_t *bitplane, uint8_t width_pixels, uint8_t height_pixels);
+void decomp_bitplane(file_bitstream_reader &rom, uint8_t *bitplane, uint8_t width_pixels, uint8_t height_pixels);
 void delta_decode(uint8_t *bitplane, uint8_t width_pixels, uint8_t height_pixels);
 void xor_buffers(uint8_t *base1, uint8_t *base2, uint8_t width_pixels, uint8_t height_pixels);
 
@@ -42,10 +47,10 @@ uint8_t *decompress_image(file_bitstream_reader &rom)
   
   uint8_t mode;
   
-  decompBitplane(rom, base1, width_pixels, height_pixels);
+  decomp_bitplane(rom, base1, width_pixels, height_pixels);
   mode = rom.get();
   if (mode == 1) mode = rom.get() + 1;
-  decompBitplane(rom, base2, width_pixels, height_pixels);
+  decomp_bitplane(rom, base2, width_pixels, height_pixels);
 
   switch (mode) {
     case 0:
@@ -67,7 +72,7 @@ uint8_t *decompress_image(file_bitstream_reader &rom)
 }
 
 
-void decompBitplane(file_bitstream_reader &rom, uint8_t *bitplane, uint8_t width_pixels, uint8_t height_pixels) {
+void decomp_bitplane(file_bitstream_reader &rom, uint8_t *bitplane, uint8_t width_pixels, uint8_t height_pixels) {
   image_bitstream_writer writer(bitplane, width_pixels, height_pixels);
 
   bool packet_type = rom.get(); // 0 = RLE, 1 = DATA

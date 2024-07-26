@@ -1,4 +1,7 @@
 build.bat
+pkyel_rom.gbc
+a.exe
+DEBUG.txt
 bytefile.bin
 charset.txt
 evolution.cpp

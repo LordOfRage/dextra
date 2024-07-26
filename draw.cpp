@@ -99,3 +99,13 @@ void draw_pokemon_sprite(file_bitstream_reader &rom, uint8_t id, int line, int c
 
   free(pointer);
 }
+
+void draw_horizontal_line(int line, int start, int length) {
+  cout << "\u001b[" << to_string(line) << ";" << to_string(start) << "H";
+  for (int i=0; i<length; i++) cout << "-";
+}
+
+void draw_vertical_line(int column, int start, int height) {
+  cout << "\u001b[" << to_string(start) << ";" << to_string(column) << "H";
+  for (int i=0; i<height; i++) cout << "|\u001b[" << to_string(start+i+1) << ";" << to_string(column) << "H";
+}

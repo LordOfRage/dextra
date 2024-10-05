@@ -1,4 +1,5 @@
 #include <cstdint>
+#include <windows.h>
 #include <iostream>
 #include <string>
 #include "bitstream.h"
@@ -7,10 +8,14 @@
 using namespace std;
 using namespace bitstream;
 
+void jump_to(int line, int column) {
+  cout << "\u001b[0m\u001b[" << to_string(line) << ";" << to_string(column) << "H";
+}
+
 void clear_area(int startx, int starty, int width, int height) {
   for (int i=0; i<height; i++) {
     int next_line = startx+i;
-    cout << "\u001b[0m\u001b[" << to_string(next_line) << ";" << to_string(starty) << "H";
+    jump_to(next_line, starty);
     for (int j=0; j<width; j++) cout << " ";
   }  
   cout << "\u001b[0m" << '\n';
@@ -25,7 +30,7 @@ void draw_letter(file_bitstream_reader &rom, char letter, int line, int column) 
   bool pixels[16];
   for (int i=0; i<4; i++) {
     int next_line = line+i;
-    cout << "\u001b[0m\u001b[" << to_string(next_line) << ";" << to_string(column) << "H";
+    jump_to(next_line, column);
     for (int j=0; j<16; j++) {
       pixels[j] = rom.get();
     }
@@ -33,23 +38,26 @@ void draw_letter(file_bitstream_reader &rom, char letter, int line, int column) 
     for (int j=0; j<8; j++) {
       cout << fg_chars[pixels[j]] << bg_chars[pixels[j+8]] << "\u2580";
     }
-    cout << "\u001b[0m" << '\n';
   }
 }
 
 void draw_string(file_bitstream_reader &rom, string str, int line, int column) {
+  int xpos = 0;
   for (int i=0; i<str.length(); i++) {
     char c = str[i];
-    if (('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z')) draw_letter(rom, c-0x41, line, column + i*8);
-    else if ('0' <= c && c <= '9')                        draw_letter(rom, c+0x46, line, column + i*8);
-    else if (c == '-')                                    draw_letter(rom,   0x63, line, column + i*8);
-    else if (c == '%')                                    draw_letter(rom,   0x61, line, column + i*8);
-    else if (c == '^')                                    draw_letter(rom,   0x62, line, column + i*8);
-    else if (c == '.')                                    draw_letter(rom,   0x68, line, column + i*8);
-    else if (c == '\'')                                   draw_letter(rom,   0x60, line, column + i*8);
-    else if (c == 'm')                                    draw_letter(rom,   0x62, line, column + i*8);
-    else if (c == '^')                                    draw_letter(rom,   0x62, line, column + i*8);
-    else                                                  continue;
+    if (('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z')) draw_letter(rom, c-0x41, line, column + xpos*8);
+    else if ('0' <= c && c <= '9')                        draw_letter(rom, c+0x46, line, column + xpos*8);
+    else if (c == '-')                                    draw_letter(rom,   0x63, line, column + xpos*8);
+    else if (c == '%')                                    draw_letter(rom,   0x61, line, column + xpos*8);
+    else if (c == '^')                                    draw_letter(rom,   0x62, line, column + xpos*8);
+    else if (c == '.')                                    draw_letter(rom,   0x68, line, column + xpos*8);
+    else if (c == '\'')                                   draw_letter(rom,   0x60, line, column + xpos*8);
+    else if (c == 'm')                                    draw_letter(rom,   0x62, line, column + xpos*8);
+    else if (c == '^')                                    draw_letter(rom,   0x62, line, column + xpos*8);
+    else if (c == (char)0x80)                             draw_letter(rom,   0x75, line, column + xpos*8);
+    else if (c == (char)0x82)                             draw_letter(rom,   0x75, line, column + xpos*8);
+    else                                                  xpos--;
+    xpos++;
   }
 }
 
@@ -81,10 +89,18 @@ void draw_pokemon_sprite(file_bitstream_reader &rom, uint8_t id, int line, int c
   bitstream_reader lo_bitplane(pointer);
   bitstream_reader hi_bitplane(pointer + BYTES_PER_PLANE);
 
+  jump_to(line, column);
+  for (int i=0; i<28; i++) {
+    jump_to(line+i, column);
+    for (int j=0; j<56; j++) cout << fg_chars[0] << bg_chars[0] << "\u2580";
+  }
+  line += (56-height)/2;
+  column += (56-width)/2;
+
   uint8_t chars[112];
   for (int i=0; i<height/2; i++) {
     int next_line = line+i;
-    cout << "\u001b[0m\u001b[" << to_string(next_line) << ";" << to_string(column) << "H";
+    jump_to(next_line, column);
 
     for (int j=0; j<width*2; j++) {
       bool lo_bit = lo_bitplane.get();
@@ -108,4 +124,18 @@ void draw_horizontal_line(int line, int start, int length) {
 void draw_vertical_line(int column, int start, int height) {
   cout << "\u001b[" << to_string(start) << ";" << to_string(column) << "H";
   for (int i=0; i<height; i++) cout << "|\u001b[" << to_string(start+i+1) << ";" << to_string(column) << "H";
+}
+
+void write_string(string str, int startx, int starty, int width, int height) {
+  string lines[100];
+  for (int line_num=0; line_num < height; line_num++) {
+    jump_to(starty+line_num, startx);
+    int line_length = 0;
+    for (int i=0; i<width; i++)
+      if (str[i] == ' ' || str[i] == 0) line_length = i;
+    
+    cout << str.substr(0, line_length);
+    if (str.length() > line_length) str = str.substr(line_length+1, str.length()-line_length);
+    else break;
+  }
 }

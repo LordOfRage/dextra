@@ -91,4 +91,4 @@ namespace bitstream {
     uint8_t byte_pointer;
   };
 }
-#endif // !DEBUG
+#endif

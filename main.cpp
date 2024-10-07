@@ -42,13 +42,11 @@ int main(int argc, char *argv[]) {
   int type_colors[] = {15, 208, 172, 129, 136, 243, 0, 10, 105, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 196, 21, 28, 190, 207, 4, 166};
 
   string type1string;
-  cout << to_string(pokemon->type1);
   rom.seek(0x27dae + (2*pokemon->type1));
   rom.seek(rom.get_word() + 0x20000);
   type1string = "\u001b[38;5;" + to_string(type_colors[pokemon->type1]) + "m" + read_string(rom);
 
   string type2string;
-  cout << to_string(pokemon->type2);
   rom.seek(0x27dae + (2*pokemon->type2));
   rom.seek(rom.get_word() + 0x20000);
   type2string = "\u001b[38;5;" + to_string(type_colors[pokemon->type2]) + "m" + read_string(rom);
@@ -64,11 +62,16 @@ int main(int argc, char *argv[]) {
   draw_pokemon_sprite(rom, id, 6, 1);
   write_string("ID: #" + to_string(id), 3, 36, 10, 1);
   write_string("----------------TM USAGE---------------", 58, 7, 100, 1);
+  write_string("----------------HM USAGE---------------", 58, 35, 100, 1);
   for (int i=0; i<50; i++) {
     string ability = (pokemon->tm_usage[i] ? "\u001b[32mABLE" : "\u001b[31mNOT ABLE");
     int line_num = i%25 + 9;
     int col_num = 60 + (i>=25)*20;
     write_string("TM" + to_string(i+1) + ": " + ability + "\u001b[0m", col_num, line_num, 25, 1);
+  }
+  for (int i=0; i<5; i++) {
+    string ability = (pokemon->tm_usage[i] ? "\u001b[32mABLE" : "\u001b[31mNOT ABLE");
+    write_string("HM" + to_string(i+1) + ": " + ability + "\u001b[0m", 60, 37+i, 25, 1);
   }
 
   free(pokemon);

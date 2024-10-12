@@ -5,7 +5,8 @@
 #include <string>
 #include "bitstream.h"
 #include "data_structs.h"
-#include "draw.cpp"
+#include "pokechar.h"
+#include "draw.h"
 #include "pokemon_data_conversion.cpp"
 #include "constants.h"
 using namespace std;
@@ -61,18 +62,7 @@ int main(int argc, char *argv[]) {
   draw_string(rom, name, 1, (WIDTH-name.length())*4+1);
   draw_pokemon_sprite(rom, id, 6, 1);
   write_string("ID: #" + to_string(id), 3, 36, 10, 1);
-  write_string("----------------TM USAGE---------------", 58, 7, 100, 1);
-  write_string("----------------HM USAGE---------------", 58, 35, 100, 1);
-  for (int i=0; i<50; i++) {
-    string ability = (pokemon->tm_usage[i] ? "\u001b[32mABLE" : "\u001b[31mNOT ABLE");
-    int line_num = i%25 + 9;
-    int col_num = 60 + (i>=25)*20;
-    write_string("TM" + to_string(i+1) + ": " + ability + "\u001b[0m", col_num, line_num, 25, 1);
-  }
-  for (int i=0; i<5; i++) {
-    string ability = (pokemon->tm_usage[i] ? "\u001b[32mABLE" : "\u001b[31mNOT ABLE");
-    write_string("HM" + to_string(i+1) + ": " + ability + "\u001b[0m", 60, 37+i, 25, 1);
-  }
+  display_page(pokemon, 0);
 
   free(pokemon);
   rom.close();

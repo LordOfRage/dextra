@@ -3,10 +3,14 @@
 #include <iostream>
 #include <string>
 #include "bitstream.h"
-#include "pokechar.cpp"
+#include "data_structs.h"
+#include "pokechar.h"
 #include "image_decompression.cpp"
+#include "pages.cpp"
 using namespace std;
 using namespace bitstream;
+
+void (*page_drawers[])(pokemon_data_structure*) = {&page0, &page1};
 
 void jump_to(int line, int column) {
   cout << "\u001b[0m\u001b[" << to_string(line) << ";" << to_string(column) << "H";
@@ -36,6 +40,18 @@ void draw_letter(file_bitstream_reader &rom, char letter, int line, int column) 
     }
 
     for (int j=0; j<8; j++) {
+      if (!pixels[j] && !pixels[j+8]) {
+        cout << "\u001b[0m\u001b[49m ";
+        continue;
+      }
+      if (!pixels[j] && pixels[j+8]) {
+        cout << "\u001b[49m\u001b[38;5;15m\u2584";
+        continue;
+      }
+      if (pixels[j] && !pixels[j+8]) {
+        cout << "\u001b[49m\u001b[38;5;15m\u2580";
+        continue;
+      }
       cout << fg_chars[pixels[j]] << bg_chars[pixels[j+8]] << "\u2580";
     }
   }
@@ -138,4 +154,9 @@ void write_string(string str, int startx, int starty, int width, int height) {
     if (str.length() > line_length) str = str.substr(line_length+1, str.length()-line_length);
     else break;
   }
+}
+
+void display_page(pokemon_data_structure *pokemon, int page_num) {
+  clear_area(57, 6, 20*8-57, 7*8-6);
+  (*page_drawers[page_num])(pokemon);
 }

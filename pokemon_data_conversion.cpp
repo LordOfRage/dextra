@@ -10,11 +10,12 @@
 
 using namespace std;
 using namespace bitstream;
+using namespace file_constants;
 
 pokemon_data_structure *extract_pokemon_data(int dexnum) {
   pokemon_data_structure *ret = (pokemon_data_structure *)malloc(sizeof(pokemon_data_structure));
   file_bitstream_reader rom(rom_filename);
-  rom.seek(0x383de + 0x1c*(dexnum-1));
+  rom.seek(pokemon_data_struct_pointer + 0x1c*(dexnum-1));
 
   for (int i=0; i<11; i++) {
     ret->buffer[i] = rom.get_byte(); // dexnum to frontsprite_dimensions

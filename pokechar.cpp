@@ -6,6 +6,7 @@
 #include "constants.h"
 using namespace std;
 using namespace bitstream;
+using namespace file_constants;
 
 string charset[] = {
 "*", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "_", "PKMN", "_", "_", "#", "_", "#", "*", "_", "<player>", "<rival>", "POKé", "_", "……", "_", "_", "<target>", "<attacker>", "PC", "TM", "TRAINER", "ROCKET", ".", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", "#", " ", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "(", ")", ":", ";", "[", "]", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "é", "'d", "'l", "'s", "'t", "'v", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "'", "PK", "MN", "-", "'r", "'m", "?", "!", ".", "ァ", "ゥ", "ェ", ">", ">", "V", "♂", "$", "x", ".", "/", ",", "♀", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
@@ -42,19 +43,19 @@ vector<uint8_t> chars_to_bin(string s) {
 
 string get_pokemon_name(uint8_t id) {
   file_bitstream_reader rom(rom_filename);
-  rom.seek(0x1c21e + ((id-1)*10));
+  rom.seek(pokename_pointer + ((id-1)*10));
   return read_string(rom);
 }
 
 uint8_t get_pokemon_dexnum(uint8_t id) {
   file_bitstream_reader rom(rom_filename);
-  rom.seek(0x41024 + (id-1));
+  rom.seek(pokemon_dex_order_pointer + (id-1));
   return rom.get_byte();
 }
 
 uint8_t get_pokemon_id(uint8_t dex) {
   file_bitstream_reader rom(rom_filename);
-  rom.seek(0x41024);
+  rom.seek(pokemon_dex_order_pointer);
   uint8_t val;
   uint8_t id;
   for (id=0; val == dex; id++) val = rom.get_byte();

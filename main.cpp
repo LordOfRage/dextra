@@ -1,6 +1,5 @@
 #include <fstream>
 #include <windows.h> 
-#include <cstdint>
 #include <cstdlib>
 #include <string>
 #include "bitstream.h"
@@ -10,6 +9,8 @@
 #include "pokemon_data_conversion.cpp"
 #include "constants.h"
 using namespace std;
+using namespace pokemon_constants;
+using namespace file_constants;
 
 int main(int argc, char *argv[]) {
   
@@ -25,16 +26,16 @@ int main(int argc, char *argv[]) {
   const int WIDTH = 20;
   const int HEIGHT = 7;
 
-  int id = stoi(argv[1]);
+  id = stoi(argv[1]);
 
-  uint8_t dex = get_pokemon_dexnum(id);
-  //if (dex == 0 || dex == 151) return 0;
+  dexnum = get_pokemon_dexnum(id);
+  //if (dexnum == 0 || dexnum == 151) return 0;
 
-  pokemon_data_structure *pokemon = extract_pokemon_data(dex);
+  data_struct = extract_pokemon_data(dexnum);
 
   string dexnum_string = "%^";  // Placeholders for PK and MN sprites
-  for (int i=to_string(dex).length(); i<3; i++) dexnum_string += "0";
-  dexnum_string += to_string(dex);
+  for (int i=to_string(dexnum).length(); i<3; i++) dexnum_string += "0";
+  dexnum_string += to_string(dexnum);
 
   string name = "";
   //for (int i=get_pokemon_name(id).length(); i<10; i++) name += "-";
@@ -43,14 +44,14 @@ int main(int argc, char *argv[]) {
   int type_colors[] = {15, 208, 172, 129, 136, 243, 0, 10, 105, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 196, 21, 28, 190, 207, 4, 166};
 
   string type1string;
-  rom.seek(0x27dae + (2*pokemon->type1));
+  rom.seek(typename_pointer + (2*data_struct->type1));
   rom.seek(rom.get_word() + 0x20000);
-  type1string = "\u001b[38;5;" + to_string(type_colors[pokemon->type1]) + "m" + read_string(rom);
+  type1string = "\u001b[38;5;" + to_string(type_colors[data_struct->type1]) + "m" + read_string(rom);
 
   string type2string;
-  rom.seek(0x27dae + (2*pokemon->type2));
+  rom.seek(typename_pointer + (2*data_struct->type2));
   rom.seek(rom.get_word() + 0x20000);
-  type2string = "\u001b[38;5;" + to_string(type_colors[pokemon->type2]) + "m" + read_string(rom);
+  type2string = "\u001b[38;5;" + to_string(type_colors[data_struct->type2]) + "m" + read_string(rom);
 
   clear_area(6, 1, 56, 56);
   clear_area(1, 1, 29*8+1, 4);
@@ -60,11 +61,11 @@ int main(int argc, char *argv[]) {
   write_string(type1string + '/' + type2string + "\u001b[0m", 3, 40, 80, 1);
   //draw_string(rom, "--------------", 1, 41);
   draw_string(rom, name, 1, (WIDTH-name.length())*4+1);
-  draw_pokemon_sprite(rom, id, 6, 1);
+  draw_pokemon_sprite(rom, data_struct, 6, 1);
   write_string("ID: #" + to_string(id), 3, 36, 10, 1);
-  display_page(pokemon, 0);
+  display_page(data_struct, 0);
 
-  free(pokemon);
+  free(data_struct);
   rom.close();
   cout << "\u001b[0m";
   jump_to(WIDTH*8, HEIGHT*8);

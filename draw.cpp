@@ -7,8 +7,10 @@
 #include "pokechar.h"
 #include "image_decompression.cpp"
 #include "pages.cpp"
+#include "constants.h"
 using namespace std;
 using namespace bitstream;
+using namespace pokemon_constants;
 
 void (*page_drawers[])(pokemon_data_structure*) = {&page0, &page1};
 
@@ -77,15 +79,11 @@ void draw_string(file_bitstream_reader &rom, string str, int line, int column) {
   }
 }
 
-void draw_pokemon_sprite(file_bitstream_reader &rom, uint8_t id, int line, int column) {
+void draw_pokemon_sprite(file_bitstream_reader &rom, pokemon_data_structure *pokemon, int line, int column) {
   string fg_chars[] = {"\u001b[38;5;15m", "\u001b[38;5;250m", "\u001b[38;5;243m", "\u001b[38;5;0m"};
   string bg_chars[] = {"\u001b[48;5;15m", "\u001b[48;5;250m", "\u001b[48;5;243m", "\u001b[48;5;0m"};
 
-  uint8_t dex = get_pokemon_dexnum(id);
-
-  rom.seek(0x0383E8 + (dex-1)*28);
-
-  int dimensions = rom.get_byte();
+  int dimensions = pokemon->frontsprite_dimension;
   int height = (dimensions & 0xf0) >> 1;
   int width = (dimensions & 0x0f) << 3;
 
@@ -97,7 +95,7 @@ void draw_pokemon_sprite(file_bitstream_reader &rom, uint8_t id, int line, int c
   else if (0x4a <= id && id <= 0x73)    bank = 0xb;
   else if (0x74 <= id && id <= 0x98)    bank = 0xc;
   else                                  bank = 0xd;
-  int offset = rom.get_word();
+  int offset = pokemon->frontsprite_pointer;
 
 
   rom.seek((bank << 14) + (offset & 0x3fff));

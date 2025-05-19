@@ -3,7 +3,6 @@
 #include <cstdint>
 #include <cstdlib>
 #include <string>
-#include <windows.h> 
 #include "bitstream.h"
 #include "data_structs.h"
 #include "constants.h"

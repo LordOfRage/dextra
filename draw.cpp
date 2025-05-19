@@ -4,7 +4,6 @@
 #include <string>
 #include "bitstream.h"
 #include "data_structs.h"
-#include "pokechar.h"
 #include "image_decompression.cpp"
 #include "pages.cpp"
 #include "constants.h"
@@ -12,26 +11,26 @@ using namespace std;
 using namespace bitstream;
 using namespace pokemon_constants;
 
-void (*page_drawers[])(pokemon_data_structure*) = {&page0, &page1};
+const array<void(*)(pokemon_data_structure*), NUM_PAGES> page_drawers = {&page0, &page1};
 
 void jump_to(int line, int column) {
-  cout << "\u001b[0m\u001b[" << to_string(line) << ";" << to_string(column) << "H";
+  cout << "\x1b[0m\x1b[" << to_string(line) << ";" << to_string(column) << "H";
 }
 
 void clear_area(int startx, int starty, int width, int height) {
   for (int i=0; i<height; i++) {
-    int next_line = startx+i;
-    jump_to(next_line, starty);
+    int next_line = starty+i;
+    jump_to(next_line, startx);
     for (int j=0; j<width; j++) cout << " ";
   }  
-  cout << "\u001b[0m" << '\n';
+  cout << "\x1b[0m" << '\n';
 }
 
 void draw_letter(file_bitstream_reader &rom, char letter, int line, int column) {
   rom.seek(0x11a80 + letter*8);
 
-  string fg_chars[] = {"\u001b[38;5;0m", "\u001b[38;5;15m"};
-  string bg_chars[] = {"\u001b[48;5;0m", "\u001b[48;5;15m"};
+  string fg_chars[] = {"\x1b[38;5;0m", "\x1b[38;5;15m"};
+  string bg_chars[] = {"\x1b[48;5;0m", "\x1b[48;5;15m"};
 
   bool pixels[16];
   for (int i=0; i<4; i++) {
@@ -43,15 +42,15 @@ void draw_letter(file_bitstream_reader &rom, char letter, int line, int column) 
 
     for (int j=0; j<8; j++) {
       if (!pixels[j] && !pixels[j+8]) {
-        cout << "\u001b[0m\u001b[49m ";
+        cout << "\x1b[0m\x1b[49m ";
         continue;
       }
       if (!pixels[j] && pixels[j+8]) {
-        cout << "\u001b[49m\u001b[38;5;15m\u2584";
+        cout << "\x1b[49m\x1b[38;5;15m\u2584";
         continue;
       }
       if (pixels[j] && !pixels[j+8]) {
-        cout << "\u001b[49m\u001b[38;5;15m\u2580";
+        cout << "\x1b[49m\x1b[38;5;15m\u2580";
         continue;
       }
       cout << fg_chars[pixels[j]] << bg_chars[pixels[j+8]] << "\u2580";
@@ -80,8 +79,8 @@ void draw_string(file_bitstream_reader &rom, string str, int line, int column) {
 }
 
 void draw_pokemon_sprite(file_bitstream_reader &rom, pokemon_data_structure *pokemon, int line, int column) {
-  string fg_chars[] = {"\u001b[38;5;15m", "\u001b[38;5;250m", "\u001b[38;5;243m", "\u001b[38;5;0m"};
-  string bg_chars[] = {"\u001b[48;5;15m", "\u001b[48;5;250m", "\u001b[48;5;243m", "\u001b[48;5;0m"};
+  string fg_chars[] = {"\x1b[38;5;15m", "\x1b[38;5;250m", "\x1b[38;5;243m", "\x1b[38;5;0m"};
+  string bg_chars[] = {"\x1b[48;5;15m", "\x1b[48;5;250m", "\x1b[48;5;243m", "\x1b[48;5;0m"};
 
   int dimensions = pokemon->frontsprite_dimension;
   int height = (dimensions & 0xf0) >> 1;
@@ -131,13 +130,13 @@ void draw_pokemon_sprite(file_bitstream_reader &rom, pokemon_data_structure *pok
 }
 
 void draw_horizontal_line(int line, int start, int length) {
-  cout << "\u001b[" << to_string(line) << ";" << to_string(start) << "H";
+  cout << "\x1b[" << to_string(line) << ";" << to_string(start) << "H";
   for (int i=0; i<length; i++) cout << "-";
 }
 
 void draw_vertical_line(int column, int start, int height) {
-  cout << "\u001b[" << to_string(start) << ";" << to_string(column) << "H";
-  for (int i=0; i<height; i++) cout << "|\u001b[" << to_string(start+i+1) << ";" << to_string(column) << "H";
+  cout << "\x1b[" << to_string(start-1) << ";" << to_string(column) << "H";
+  for (int i=0; i<height; i++) cout << "\x1b[" << to_string(start+i) << ";" << to_string(column) << "H|";
 }
 
 void write_string(string str, int startx, int starty, int width, int height) {
@@ -155,6 +154,6 @@ void write_string(string str, int startx, int starty, int width, int height) {
 }
 
 void display_page(pokemon_data_structure *pokemon, int page_num) {
-  clear_area(57, 6, 20*8-57, 7*8-6);
+  clear_area(58, 6, WIDTH*8-57, 43);
   (*page_drawers[page_num])(pokemon);
 }

@@ -56,9 +56,13 @@ uint8_t get_pokemon_dexnum(uint8_t id) {
 uint8_t get_pokemon_id(uint8_t dex) {
   file_bitstream_reader rom(rom_filename);
   rom.seek(pokemon_dex_order_pointer);
-  uint8_t val;
+  uint8_t val = 0xFF;
   uint8_t id;
-  for (id=0; val == dex; id++) val = rom.get_byte();
+  for (id=0; val != dex; id++) {
+    debug << to_string(val) + ", ";
+    val = rom.get_byte();
+    debug << to_string(val) + ", ";
+  }
   return id;
 }
 

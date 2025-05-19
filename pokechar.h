@@ -1,11 +1,11 @@
+#ifndef POKECHAR
+#define POKECHAR
+
 #include "bitstream.h"
 #include <cstdint>
 #include <vector>
 using namespace std;
 using namespace bitstream;
-
-#ifndef POKECHAR
-#define POKECHAR
 
 string read_string(file_bitstream_reader&, int=10, uint8_t=0x50);
 vector<uint8_t> chars_to_bin(string);

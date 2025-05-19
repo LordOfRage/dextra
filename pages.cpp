@@ -1,5 +1,8 @@
+#include <string>
 #include "data_structs.h"
 #include "draw.h"
+#include "evolution.cpp"
+#include "constants.h"
 
 void page0(pokemon_data_structure *pokemon) {
   write_string("----------------TM USAGE---------------", 59, 7, 100, 1);
@@ -17,5 +20,6 @@ void page0(pokemon_data_structure *pokemon) {
 }
 
 void page1(pokemon_data_structure *pokemon) {
-
+	debug << to_string(get_pokemon_id(pokemon->dexnum));
+	write_string(evo_info(get_pokemon_id(pokemon->dexnum)), 59, 7, 20, 20);
 }

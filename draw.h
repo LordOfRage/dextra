@@ -1,10 +1,10 @@
+#ifndef DRAW
+#define DRAW
+
 #include "bitstream.h"
 #include "data_structs.h"
 #include <cstdint>
 using namespace bitstream;
-
-#ifndef DRAW
-#define DRAW
 
 void jump_to(int, int);
 void clear_area(int, int, int, int);

@@ -144,8 +144,13 @@ void write_string(string str, int startx, int starty, int width, int height) {
   for (int line_num=0; line_num < height; line_num++) {
     jump_to(starty+line_num, startx);
     int line_length = 0;
-    for (int i=0; i<width; i++)
+    for (int i=0; i<width; i++) {
       if (str[i] == ' ' || str[i] == 0) line_length = i;
+      if (str[i] == '\n') {
+        line_length = i;
+        break;
+      }
+    }
     
     cout << str.substr(0, line_length);
     if (str.length() > line_length) str = str.substr(line_length+1, str.length()-line_length);

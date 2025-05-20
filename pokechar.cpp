@@ -59,9 +59,7 @@ uint8_t get_pokemon_id(uint8_t dex) {
   uint8_t val = 0xFF;
   uint8_t id;
   for (id=0; val != dex; id++) {
-    debug << to_string(val) + ", ";
     val = rom.get_byte();
-    debug << to_string(val) + ", ";
   }
   return id;
 }

@@ -10,6 +10,8 @@ As of the last commit, this project can:
 - Display the frontsprite for the pokemon
 - Show typing
 - Show TM/HM capabilities
+- Show level up moveset
+- Show partial evolution data
 
 ## How to build
 
@@ -21,10 +23,10 @@ Simply run the command:
 ### Strange characters with strange colouring artefacts appear when I run the command.
 This is likely due to the fact that your terminal is not printing the Unicode characters as Unicode characters. To fix this, simply change the character page for your terminal. On Windows CMD, this would be:
 `chcp 65001`
-If you do not use Windows, please search for your solution online and contact me on GitHub so I can update the README.
+If you do not use Windows, please search for your solution online and add an issue on GitHub so I can update the README.
 
 ### How to see (insert feature here)?
-This project is a work in progress. If you have any suggestions, contact me on GitHub.
+This project is a work in progress. If you have any suggestions, add an issue.
 
 ### Your code sucks.
 I know.

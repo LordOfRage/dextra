@@ -37,7 +37,7 @@ void page0(pokemon_data_structure *pokemon) {
     write_string("TM" + to_string(i+1) + ": " + ability + "\u001b[0m", col_num, line_num, 25, 1);
   }
   for (int i=0; i<5; i++) {
-    string ability = (pokemon->tm_usage[i] ? "\u001b[32mABLE" : "\u001b[31mNOT ABLE");
+    string ability = (pokemon->hm_usage[i] ? "\u001b[32mABLE" : "\u001b[31mNOT ABLE");
     write_string("HM" + to_string(i+1) + ": " + ability + "\u001b[0m", 121, 37+i, 25, 1);
   }
 }

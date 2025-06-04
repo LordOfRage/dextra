@@ -6,6 +6,7 @@ namespace pokemon_constants {
   uint8_t id;
 
   pokemon_data_structure *data_struct;
+  dexinfo_structure *dexinfo;
 }
 
 namespace file_constants {

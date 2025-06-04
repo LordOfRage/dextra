@@ -12,6 +12,7 @@ namespace pokemon_constants {
   extern uint8_t id;
 
   extern pokemon_data_structure *data_struct;
+  extern dexinfo_structure *dexinfo;
 }
 
 namespace file_constants {
@@ -20,6 +21,7 @@ namespace file_constants {
   const int pokename_pointer = 0x1c21e;
   const int pokemon_data_struct_pointer = 0x383de;
   const int pokemon_dex_order_pointer = 0x41024;
+  const int pokedex_info_pointer = 0x4047e;
   extern ofstream debug;
 }
 

@@ -3,8 +3,10 @@
 #include <cstdint>
 #include <cstdlib>
 #include <string>
+#include <stdlib.h>
 #include "bitstream.h"
 #include "data_structs.h"
+#include "pokechar.h"
 #include "constants.h"
 
 using namespace std;
@@ -17,6 +19,7 @@ pokemon_data_structure *extract_pokemon_data(int dexnum) {
   rom.seek(pokemon_data_struct_pointer + 0x1c*(dexnum-1));
 
   for (int i=0; i<11; i++) {
+    debug << to_string(i) << ": " << to_string(rom.peek_byte()) << endl;
     ret->buffer[i] = rom.get_byte(); // dexnum to frontsprite_dimensions
   }
   ret->frontsprite_pointer = rom.get_word();
@@ -33,6 +36,7 @@ pokemon_data_structure *extract_pokemon_data(int dexnum) {
   }
   
   uint8_t rest = rom.get_byte();
+  debug << "Rest: " << to_string(rest) << endl;
 
   ret->tm_usage[48] = rest & 0x01;
   ret->tm_usage[49] = rest & 0x02;
@@ -40,7 +44,33 @@ pokemon_data_structure *extract_pokemon_data(int dexnum) {
     ret->hm_usage[i] = rest & (0x04 << i);
   }
 
+  ret->hm_usage[0] = rest & 0x04;
+  ret->hm_usage[1] = rest & 0x08;
+  ret->hm_usage[2] = rest & 0x10;
+  ret->hm_usage[3] = rest & 0x20;
+  ret->hm_usage[4] = rest & 0x40;
+  debug << "HMs: " << ret->hm_usage[0] << ret->hm_usage[1] << ret->hm_usage[2] << ret->hm_usage[3] << ret->hm_usage[4];
+
   rom.close();
 
   return ret;
 }
+
+dexinfo_structure *extract_dex_data(int id) {
+  dexinfo_structure *ret = (dexinfo_structure *)malloc(sizeof(dexinfo_structure));
+
+  file_bitstream_reader rom(rom_filename);
+  rom.seek(pokedex_info_pointer + 2*(id-1));
+  rom.seek(rom.get_word() + 0x3c000);
+  
+  strcpy(ret->pkmnkind, read_string(rom).c_str());
+  ret->height_feet = rom.get_byte();
+  debug << endl << "Height: " << to_string(rom.peek_byte()) << endl;
+  ret->height_inches = rom.get_byte();
+  ret->weight_tenthpounds = rom.get_word();
+  rom.get_byte();
+  ret->dexentry_pointer = rom.get_word();
+  debug << to_string(ret->dexentry_pointer);
+
+  return ret;
+};

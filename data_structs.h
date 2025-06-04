@@ -1,6 +1,7 @@
 #ifndef DATASTRUCTS
 #define DATASTRUCTS
 #include <cstdint>
+#include <string>
 
 enum pokemon_type {
   NORMAL,
@@ -62,7 +63,14 @@ typedef union pokemon_data_structure {
     bool tm_usage[50];
     bool hm_usage[5];
   };
-
 } pokemon_data_structure;
+
+typedef struct dexinfo_structure {
+  char pkmnkind[11];
+  uint8_t height_feet;
+  uint8_t height_inches;
+  uint16_t weight_tenthpounds;
+  uint16_t dexentry_pointer;
+} dexinfo_structure;
 
 #endif

@@ -12,6 +12,8 @@ As of the last commit, this project can:
 - Show TM/HM capabilities
 - Show level up moveset
 - Show partial evolution data
+- Show dex entry, height and weight information
+- Show base stats
 
 ## How to build
 

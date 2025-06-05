@@ -18,6 +18,16 @@ As of the last commit, this project can:
 Simply run the command:
 `g++ main.cpp -o main.exe bitstream.cpp draw.cpp pokechar.cpp constants.cpp`
 
+## How to use
+
+The ROM file name must be called `pkred_rom.gb`. After renaming the ROM, run the command `<exe-name> <pokemon-name>`.
+
+Some odd Pokémon names are listed here:
+Farfetch'd is `farfetch'd`
+Mr Mime is `mr.mime` (no space)
+Nidoran (male) is `nidoranm`
+Nidoran (female) is `nidoranf`
+
 ## FAQ (and other complaints)
 
 ### Strange characters with strange colouring artefacts appear when I run the command.

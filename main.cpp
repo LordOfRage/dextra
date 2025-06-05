@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <algorithm>
+#include <cstring>
 #include <windows.h>
 #include <cstdlib>
 #include <string>
@@ -13,6 +14,24 @@ using namespace std;
 using namespace pokemon_constants;
 using namespace file_constants;
 
+int get_id_from_name(file_bitstream_reader &rom, char *nme) {
+  if (!strcmp("nidoranm", nme)) return 3;
+  if (!strcmp("nidoranf", nme)) return 15;
+
+  string name = nme;
+  for (int i=0; i<name.length(); i++) if ('a'<=name[i] && name[i]<='z') name[i] -= 'a'-'A';
+
+  int ret = 0;
+
+  while (ret <= 190) {
+    rom.seek(pokename_pointer + (ret++)*10);
+    string readname = read_string(rom);
+    if (readname==name) return ret;
+  }
+  
+  return NULL;
+}
+
 int main(int argc, char *argv[]) {
 
   system("");
@@ -20,7 +39,18 @@ int main(int argc, char *argv[]) {
 
   file_bitstream_reader rom(rom_filename);
 
-  id = stoi(argv[1]);
+
+  for (int i=0; i<0x20; i++) {
+    rom.seek(typename_pointer + 2*i);
+    rom.seek(rom.get_word() + 0x20000);
+    //cout << "\x1b[38;5;" << TYPE_COLORS[i] << "m" << read_string(rom, 12) << "\x1b[0m\n";
+  }
+
+  id = get_id_from_name(rom, argv[1]);
+  if (id == NULL) {
+    cout << "No POKéMON named " << static_cast<string>(argv[1]) << " found in database!" << endl;
+    return 0;
+  }
 
   dexnum = get_pokemon_dexnum(id);
   //if (dexnum == 0 || dexnum == 151) return 0;

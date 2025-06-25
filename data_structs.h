@@ -3,8 +3,8 @@
 #include <cstdint>
 #include <string>
 
-enum pokemon_type {
-  NORMAL,
+enum pokemon_type : uint8_t {
+  NORMAL = 0,
   FIGHTING,
   FLYING,
   POISON,
@@ -13,18 +13,7 @@ enum pokemon_type {
   BIRD,  // unused in final game
   BUG,
   GHOST,
-  blank0,
-  blank1,
-  blank2,
-  blank3,
-  blank4,
-  blank5,
-  blank6,
-  blank7,
-  blank8,
-  blank9,
-  blank10,
-  FIRE,
+  FIRE = 0x14,
   WATER,
   GRASS,
   ELECTRIC,
@@ -33,11 +22,9 @@ enum pokemon_type {
   DRAGON
 };
 
-enum growth_rate {
-  MEDIUMFAST,
-  blank11,
-  blank12,
-  MEDIUMSLOW,
+enum growth_rate_values : uint8_t {
+  MEDIUMFAST = 0,
+  MEDIUMSLOW = 2,
   FAST,
   SLOW
 };
@@ -51,15 +38,15 @@ typedef union pokemon_data_structure {
     uint8_t base_defence;
     uint8_t base_speed;
     uint8_t base_special;
-    uint8_t type1;
-    uint8_t type2;
+    pokemon_type type1;
+    pokemon_type type2;
     uint8_t catch_rate;
     uint8_t base_xp_yield;
     uint8_t frontsprite_dimension;
     uint16_t frontsprite_pointer; // pointer within ROM btw
     uint16_t backsprite_pointer; // always 4x4
     uint8_t initial_attacks[4];
-    growth_rate growth_rate;
+    growth_rate_values growth_rate;
     bool tm_usage[50];
     bool hm_usage[5];
   };

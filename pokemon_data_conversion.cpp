@@ -1,4 +1,3 @@
-#include <cctype>
 #include <cmath>
 #include <cstdint>
 #include <cstdlib>
@@ -28,7 +27,7 @@ pokemon_data_structure *extract_pokemon_data(int dexnum) {
     ret->initial_attacks[i] = rom.get_byte();
   }
 
-  ret->growth_rate = (growth_rate)rom.get_byte();
+  ret->growth_rate = (growth_rate_values)rom.get_byte();
 
   for (int i=0; i<48; i++) {
     ret->tm_usage[8*(int)floor(i/8) - (i%8) + 7] = rom.get();

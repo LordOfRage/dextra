@@ -1,5 +1,4 @@
 #include "bitstream.h"
-#include "pokechar.h"
 #include "constants.h"
 #include <string>
 #include <tuple>

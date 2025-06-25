@@ -39,21 +39,14 @@ int main(int argc, char *argv[]) {
 
   file_bitstream_reader rom(rom_filename);
 
-
-  for (int i=0; i<0x20; i++) {
-    rom.seek(typename_pointer + 2*i);
-    rom.seek(rom.get_word() + 0x20000);
-    //cout << "\x1b[38;5;" << TYPE_COLORS[i] << "m" << read_string(rom, 12) << "\x1b[0m\n";
-  }
-
   id = get_id_from_name(rom, argv[1]);
   if (id == NULL) {
     cout << "No POKéMON named " << static_cast<string>(argv[1]) << " found in database!" << endl;
     return 0;
   }
-
+  
   dexnum = get_pokemon_dexnum(id);
-  //if (dexnum == 0 || dexnum == 151) return 0;
+  if (dexnum == 0 || dexnum == 151) return 0;
 
   data_struct = extract_pokemon_data(dexnum);
   dexinfo = extract_dex_data(id);
@@ -68,6 +61,8 @@ int main(int argc, char *argv[]) {
   int typestringlen = 1;
 
   string type1string;
+  cout << to_string(data_struct->type1);
+
   rom.seek(typename_pointer + (2*data_struct->type1));
   rom.seek(rom.get_word() + 0x20000);
   type1string = read_string(rom);

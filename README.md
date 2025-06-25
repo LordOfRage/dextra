@@ -25,10 +25,11 @@ Simply run the command:
 The ROM file name must be called `pkred_rom.gb`. After renaming the ROM, run the command `<exe-name> <pokemon-name>`.
 
 Some odd Pokémon names are listed here:
-Farfetch'd is `farfetch'd`
-Mr Mime is `mr.mime` (no space)
-Nidoran (male) is `nidoranm`
-Nidoran (female) is `nidoranf`
+
+- Farfetch'd is `farfetch'd`
+- Mr Mime is `mr.mime` (no space)
+- Nidoran (male) is `nidoranm`
+- Nidoran (female) is `nidoranf`
 
 ## FAQ (and other complaints)
 

@@ -1,7 +1,5 @@
-#include <cstdio>
 #include <algorithm>
 #include <cstring>
-#include <cstdlib>
 #include <string>
 #include "bitstream.h"
 #include "data_structs.h"
@@ -9,7 +7,7 @@
 #include "draw.h"
 #include "pokemon_data_conversion.cpp"
 #include "constants.h"
-#include "getch.cpp"
+#include "getch.hpp"
 using namespace std;
 using namespace pokemon_constants;
 using namespace file_constants;
@@ -148,11 +146,23 @@ int main(int argc, char *argv[]) {
   cout << "\x1b[0m";
   
   int pagenum = 0;
-  while (pagenum < NUM_PAGES) {
-    display_page(data_struct, pagenum++);
-    // Keep the application running until all pages have been seen
-    dextra_getch();
-  }
+  display_page(data_struct, pagenum);
+  char input;
+  while (1) {
+    input = dextra_getch();
+    switch (input) {
+      case 'l':
+        if (pagenum + 1 < NUM_PAGES) display_page(data_struct, ++pagenum);
+        break;
+      case 'j':
+        if (pagenum - 1 >= 0) display_page(data_struct, --pagenum);
+        break;
+      case 'q':
+        goto exit;
+    }
+  } 
+
+exit:
   free(data_struct);
 
   cout << "\x1b[2J";

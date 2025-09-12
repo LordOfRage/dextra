@@ -1,4 +1,5 @@
 #include <iostream>
+#include "getch.hpp"
 
 #if defined(WIN32) || defined(_WIN32)
 

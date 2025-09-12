@@ -1,7 +1,6 @@
 #include <cstdio>
 #include <algorithm>
 #include <cstring>
-#include <windows.h>
 #include <cstdlib>
 #include <string>
 #include "bitstream.h"
@@ -10,6 +9,7 @@
 #include "draw.h"
 #include "pokemon_data_conversion.cpp"
 #include "constants.h"
+#include "getch.cpp"
 using namespace std;
 using namespace pokemon_constants;
 using namespace file_constants;
@@ -32,10 +32,32 @@ int get_id_from_name(file_bitstream_reader &rom, char *nme) {
   return NULL;
 }
 
+void await_screen_big_enough() {
+  int x, y = 0;
+  int prevx, prevy = 0;
+  while (x < WIDTH*8 || y < HEIGHT*8) {
+    printf("\x1b[999;999H\x1b[6n");
+    char c, buff[20];
+    int i=0;
+    do {
+        c = dextra_getch();
+        buff[i++] = c;
+    } while (c != 'R');
+    buff[i] = 0;
+    sscanf(buff, "\x1b[%d;%dR", &y, &x);
+    if (prevx != x || prevy != y)
+      printf("\x1b[2J\x1b[HExpected WIDTHxHEIGHT: %dx%d\nActual WIDTHxHEIGHT: %dx%d\nPlease resize your terminal window", WIDTH*8, HEIGHT*8, x, y);
+    prevx = x;
+    prevy = y;
+  }
+}
+
 int main(int argc, char *argv[]) {
 
   system("");
   cout << "\x1b[0m";
+
+  await_screen_big_enough();
 
   file_bitstream_reader rom(rom_filename);
 
@@ -79,7 +101,7 @@ int main(int argc, char *argv[]) {
   clear_area(6, 1, 56, 56);
   clear_area(1, 1, 29*8+1, 4);
   draw_horizontal_line(5, 1, WIDTH*8);
-  draw_vertical_line(57, 6, HEIGHT*8 - 8);
+  draw_vertical_line(57, 6, HEIGHT*8);
   draw_string(rom, dexnum_string, 1, 1);
   write_string(type1string + '/' + type2string + "\x1b[0m", 55-typestringlen, 36, 80, 1);
   draw_string(rom, name, 1, (WIDTH-name.length())*4+1);
@@ -129,7 +151,7 @@ int main(int argc, char *argv[]) {
   while (pagenum < NUM_PAGES) {
     display_page(data_struct, pagenum++);
     // Keep the application running until all pages have been seen
-    getchar();
+    dextra_getch();
   }
   free(data_struct);
 

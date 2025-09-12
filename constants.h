@@ -27,7 +27,7 @@ namespace file_constants {
 
 const int NUM_PAGES = 2;
 const int WIDTH = 20;
-const int HEIGHT = 7;
+const int HEIGHT = 6;
 
 
 const int TYPE_COLORS[] = {15, 208, 31, 129, 136, 243, 0, 10, 105, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 196, 21, 28, 190, 207, 51, 95};

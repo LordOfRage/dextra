@@ -18,7 +18,7 @@ As of the last commit, this project can:
 ## How to build
 
 Simply run the command:
-`g++ main.cpp -o main.exe bitstream.cpp draw.cpp pokechar.cpp constants.cpp`
+`g++ main.cpp -o main.exe bitstream.cpp draw.cpp pokechar.cpp constants.cpp getch.cpp`
 
 ## How to use
 
@@ -36,6 +36,7 @@ Some odd Pokémon names are listed here:
 ### Strange characters with strange colouring artefacts appear when I run the command.
 This is likely due to the fact that your terminal is not printing the Unicode characters as Unicode characters. To fix this, simply change the character page for your terminal. On Windows CMD, this would be:
 `chcp 65001`
+(On Windows, dextra should automatically do this for you, so this only needs to be done if there is a problem with dextra)
 If you do not use Windows, please search for your solution online and add an issue on GitHub so I can update the README.
 
 ### How to see (insert feature here)?

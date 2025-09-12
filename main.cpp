@@ -52,7 +52,10 @@ void await_screen_big_enough() {
 
 int main(int argc, char *argv[]) {
 
-  system("");
+#if defined(WIN32) || defined(_WIN32)
+  system("chcp 65001");
+#endif
+
   cout << "\x1b[0m";
 
   await_screen_big_enough();

@@ -144,8 +144,8 @@ void write_string(string str, int startx, int starty, int width, int height) {
     jump_to(starty+line_num, startx);
     int line_length = 0;
     for (int i=0; i<width; i++) {
-      if (str[i] == ' ' || str[i] == 0) line_length = i;
-      if (str[i] == '\n') {
+      if (str[i] == ' ') line_length = i;
+      if (str[i] == '\n' || str[i] == 0) {
         line_length = i;
         break;
       }

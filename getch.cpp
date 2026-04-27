@@ -26,12 +26,14 @@ char dextra_getch(){
 char dextra_getch(){
     termios TermConf;
     tcgetattr(STDIN_FILENO, &TermConf);
+    termios OldTermConf = TermConf;
 
     TermConf.c_lflag &= ~(ICANON | ECHO);
     tcsetattr(STDIN_FILENO, TCSANOW, &TermConf);
 
     char data;
     data = std::cin.get();
+    tcsetattr(STDIN_FILENO, TCSANOW, &OldTermConf);
 
     return data;
 }

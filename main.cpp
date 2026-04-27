@@ -1,6 +1,8 @@
 #include <algorithm>
 #include <cstring>
+#include <fstream>
 #include <string>
+#include <sstream>
 #include "bitstream.h"
 #include "data_structs.h"
 #include "pokechar.h"
@@ -50,7 +52,41 @@ void await_screen_big_enough() {
   }
 }
 
+int f(int, char**);
+
 int main(int argc, char *argv[]) {
+  if (!strcmp(argv[1], "init")) {
+    if (argc != 3) {
+      cout << "Improper usage of init!\nUsage: <exe-name> init <path-to-rom>";
+      return 1;
+    }
+
+    ofstream config(config_filename);
+    config.write(("filename: " + static_cast<string>(argv[2])).c_str(), strlen(argv[2]) + 11);
+  }
+  else return f(argc, argv);
+} 
+
+string get_filename() {
+  cout << "FINDING FILENAME";
+  ifstream config(config_filename);
+  string line;
+  string ret;
+  stringstream ss;
+
+  while (getline(config, line)) {
+    cout << line;
+    ss << line;
+    ss >> ret;
+    if (ret == "filename:") break;
+  }
+  
+  ss >> ret;
+
+  return ret;
+}
+
+int f(int argc, char *argv[]) {
 
 #if defined(WIN32) || defined(_WIN32)
   system("chcp 65001");
@@ -59,6 +95,9 @@ int main(int argc, char *argv[]) {
   cout << "\x1b[0m";
 
   await_screen_big_enough();
+
+  rom_filename = get_filename();
+  cout << rom_filename << "\n";
 
   file_bitstream_reader rom(rom_filename);
 

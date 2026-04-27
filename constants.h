@@ -16,7 +16,8 @@ namespace pokemon_constants {
 }
 
 namespace file_constants {
-  const string rom_filename = "pkred_rom.gb";
+  const string config_filename = "dxconf.config";
+  extern string rom_filename;
   const int typename_pointer = 0x27dae;
   const int pokename_pointer = 0x1c21e;
   const int pokemon_data_struct_pointer = 0x383de;

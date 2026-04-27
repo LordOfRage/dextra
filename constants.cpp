@@ -11,4 +11,5 @@ namespace pokemon_constants {
 
 namespace file_constants {
   ofstream debug("DEBUG.txt");
+  string rom_filename = "";
 }

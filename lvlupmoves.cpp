@@ -16,7 +16,7 @@ vector<tuple<uint8_t, uint8_t>> lvlupmoveset(uint8_t id) {
   while (move_reader.get_byte() != 0) {}
 
   while (move_reader.peek_byte() != 0) {
-    ret.push_back(tuple<uint8_t, uint8_t>(move_reader.get_byte(), move_reader.get_byte()));
+    ret.push_back({move_reader.get_byte(), move_reader.get_byte()});
   }
 
   return ret;
